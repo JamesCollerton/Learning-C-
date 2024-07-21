@@ -206,6 +206,18 @@ int main() {
 
     myFunction();
 
+    // In this expression a:
+    //  - Live on the left hand side of an assignment.
+    //  - Points to a location in memory.
+    //  - Will survive past the end of the expression.
+    // Therefore a is an lvalue. 
+    // However, 42:
+    //  - Couldn't live on the left hand side of the assignment 
+    //  - Exists in memory but doesn't point to a location in memory,
+    //  - On its own wouldn't exist once the expression had finished.
+    // Therefore 42 is an rvalue
+    int a = 42;
+
     // Here we return an exit status to show the program has
     // executed successfully    
     return 0;
