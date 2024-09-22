@@ -1,9 +1,9 @@
 #include "square.h"
 
-Square::printName() {
+void Square::printName() {
     std::cout << "I am a square." << std::endl;
 }
 
-Square::printSides() {
+void Square::printSides() {
     std::cout << "I have four sides!" << std::endl;
 }

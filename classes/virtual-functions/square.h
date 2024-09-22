@@ -8,7 +8,9 @@
 
 #pragma once
 
-class Square: Shape {
+// This is interesting, we need to declare the inheritance as public in
+// order for other code to know about it.
+class Square: public Shape {
   
   public:
     void printName() override;

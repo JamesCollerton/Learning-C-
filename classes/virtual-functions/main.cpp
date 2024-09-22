@@ -38,7 +38,10 @@ int main() {
     Square square;
     Shape* shape_pointer_to_square = &square;
 
+    // Virtual function, know's it's a square
     shape_pointer_to_square->printName();
+
+    // Non-virtual functions, doesn't know it's a square
     shape_pointer_to_square->printSides();
 
     // Note, we can do the same thing with constructors and destructors.
