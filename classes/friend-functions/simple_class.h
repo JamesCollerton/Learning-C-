@@ -1,6 +1,8 @@
-#include <iostream>
-
 #pragma once
+
+#include <iostream>
+#include "friend_class.h"
+#include "friend_function_class.h"
 
 // This class allows the friend class to
 // access its private variables.
