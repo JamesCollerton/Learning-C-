@@ -40,12 +40,18 @@ template <typename T> T min(T a, T b)
 // specifying the data type.
 int main() {
 
-    std::cout << "Min of two ints: " << min<int>(1, 10) << std::endl;
+    // We've deduced the type here
+    std::cout << "Min of two ints: " << min(1, 10) << std::endl;
+
+    auto a = 'a';
+    auto b = 'b';
 
     // TODO: What does this resolve to? Tuple<char, char>?
-    Tuple tuple = Tuple('a', 'b');
+    auto tuple = Tuple<char, char>(a, b);
+    // auto a = tuple.getA();
+    // auto b = tuple.getB();
 
-    std::cout << "Min of two characters: " << min(tuple.getA(), tuple.getB()) << std::endl;
+    // std::cout << "Min of two characters: " << min(tuple.getA(), tuple.getB()) << std::endl;
 
     return 0;
 }
