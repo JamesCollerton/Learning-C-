@@ -1,7 +1,5 @@
 #pragma once
 
-// TODO: Add a template function
-
 template <typename A, typename B> class Tuple {
   
     public:

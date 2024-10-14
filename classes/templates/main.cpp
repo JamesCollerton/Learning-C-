@@ -40,18 +40,20 @@ template <typename T> T min(T a, T b)
 // specifying the data type.
 int main() {
 
-    // We've deduced the type here
+    // We've deduced the type here. Template argument deduction 
+    // automatically deduces the data type of the argument passed 
+    // to the class or function templates. This allows us to 
+    // instantiate the template without explicitly specifying the data type.
     std::cout << "Min of two ints: " << min(1, 10) << std::endl;
 
     auto a = 'a';
     auto b = 'b';
 
-    // TODO: What does this resolve to? Tuple<char, char>?
     auto tuple = Tuple<char, char>(a, b);
-    // auto a = tuple.getA();
-    // auto b = tuple.getB();
 
-    // std::cout << "Min of two characters: " << min(tuple.getA(), tuple.getB()) << std::endl;
+    std::cout << "A: " << *tuple.getA() << std::endl;
+    std::cout << "B: " << *tuple.getB() << std::endl;
+    // std::cout << "Min of Tuple values: " << min(tuple.getA(), tuple.getB()) << std::endl;
 
     return 0;
 }
