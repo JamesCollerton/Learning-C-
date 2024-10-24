@@ -2,33 +2,56 @@
 
 #pragma once
 
-// Copy constructors:
-//  Copy one object into another
-// Move constructors:
-//  Move the object into this one, the old object is no longer valid
-//  Move constructors are optional, if you don’t provide it then the 
-//  copy constructor will be called.
-//  A concept of moving ownership, the data stays in the same place on 
-//  the heap, however the old object can no longer reference it, the new 
-//  object owns this reference.
+// TODO:
+//  - When are copy constructors used?
+//  - What are special member functions, and does C++ generate the move constructor?
 
-// The only difference between a copy constructor and a move constructor 
-// is whether the source object that is passed to the constructor will 
-// have its member fields copied or moved into the new object.
+// Copy constructors can be used with the below syntax:
 
-// Imagine an object containing a member pointer to some data that is 
-// elsewhere in memory.
+// CopyAndMoveClass class_to_copy("Initial value");
+// CopyAndMoveClass copied_class = class_to_copy;
 
-// A copy constructor must leave the source object intact, so it must 
-// allocate its own copy of the object's data for itself. Both objects 
-// now refer to different copies of the same data in different areas of 
-// memory 
+// Here we are _constructing_ `copied_class_a` by _copying_ 
+// the contents of `class_to_copy_a`. In a lot of languages 
+// we do this without thinking, and C++ will generally let 
+// us do the same by generating default copy constructors. 
+// Only in certain circumstances (covered soon) do we define 
+// our own.
 
-// A move constructor, on the other hand, can simply "move" the data by 
-// taking ownership of the pointer that refers to the data, leaving the 
-// data itself where it resides. The new object now points at the original 
-// data, and the source object is modified to no longer point at the data. 
-// The data itself is left untouched.
+// Move constructors can be used with the below syntax:
+
+// CopyAndMoveClass class_to_move("Initial value");
+// CopyAndMoveClass moved_class = std::move(class_to_move);
+
+// Here we are _constructing_ `moved_class_a` by _moving_ the contents
+// of `class_to_move_a` into it. Move constructors are optional, unless
+// you specify one, the copy constructor will be called.
+
+// With a move constructor we are usually concerned with transferring
+// ownership of some data. For example, let's say we have a pointer to
+// an object as part of a class. When we move-construct class A from
+// class B, we want class A to have a pointer to the existing data class
+// B used to point to (emphasis on the used).
+
+// Contrast this to a copy constructor, which would make a full duplicate
+// of the underlying data.
+
+// TODO: Maybe a diagram.
+
+// A complimentary concept are copy and move assignment operators. We call
+// them as below.
+
+// CopyAndMoveClass class_to_copy("Initial value");
+// CopyAndMoveClass copied_class;
+// copied_class = class_to_copy;
+
+// CopyAndMoveClass class_to_move("Initial value");
+// CopyAndMoveClass moved_class;
+// moved_class = std::move(class_to_move);
+
+// They are for cases when we don't necessarily want to construct the object
+// straight away. We'll outline why we might need these in the complimentary
+// 0/3/5 rule section.
 
 class CopyAndMoveClass {
   
@@ -54,7 +77,7 @@ class CopyAndMoveClass {
     // Move constructor, this takes an rvalue reference - something
     // that we expect to live temporarily. This makes sense as we will
     // be moving the data from it, so we don't expect to continually use
-    // it.
+    // it when it's empty.
     CopyAndMoveClass(CopyAndMoveClass &&other);
 
     // Copy assignment.

@@ -4,8 +4,6 @@
 #include "friend_class.h"
 #include "friend_function_class.h"
 
-// This class allows the friend class to
-// access its private variables.
 class SimpleClass {
   
     public:
@@ -14,9 +12,11 @@ class SimpleClass {
     private:
         std::string m_name;
 
-    friend class FriendClass;
+        // This allows the FriendClass to access the private 
+        // variables (m_name)
+        friend class FriendClass;
 
-    // Now this method can access the private
-    // variables.
-    friend void FriendFunctionClass::print(SimpleClass& simpleClass);
+        // This allows only a single method within FriendFunctionClass
+        // to access m_name
+        friend void FriendFunctionClass::print(SimpleClass& simpleClass);
 };

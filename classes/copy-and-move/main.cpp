@@ -27,6 +27,8 @@ int main() {
     // populated, like the constructor.
     CopyAndMoveClass copied_class_b;
     copied_class_b = class_to_move_b;
+
+    // Both values will still be populated, like the constructor.
     copied_class_b.print();
     class_to_move_b.print();
 

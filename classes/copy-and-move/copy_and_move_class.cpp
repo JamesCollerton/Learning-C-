@@ -19,14 +19,16 @@ CopyAndMoveClass::CopyAndMoveClass(std::string value) {
 
 // In the copy constructor we take a reference to another object, then
 // make a copy into this one. The initial object remains the same. We've
-// taken a bit of a shortcut by passing a value to our 'normal' constructor.
+// taken a bit of a shortcut by passing the value to our 'normal' constructor.
 CopyAndMoveClass::CopyAndMoveClass(CopyAndMoveClass &other) : CopyAndMoveClass(*other.m_value) {
     
     std::cout << "Copy constructor, copied value into new object" << std::endl;
 }
 
-// Move constructor. Here we point to the same data in memory, but remove the
-// reference from the old object.
+// Move constructor. Here we point to the same data in memory by making a copy of
+// the pointer. To undestand this better, m_value(other.m_value) is equivalent to
+// m_value = other.mvalue, which calls the copy assignment of the pointer, copying
+// it! We also need to remove the reference from the old object.
 CopyAndMoveClass::CopyAndMoveClass(CopyAndMoveClass &&other): m_value(other.m_value) {
     
     other.m_value = nullptr;

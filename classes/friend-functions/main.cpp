@@ -2,29 +2,26 @@
 #include "friend_function_class.h"
 #include "simple_class.h"
 
-// What is the 'extern' keyword for?
-// Why do we have friend classes?
-    // A friend class can access private and protected members of other classes in which it is declared as a friend. 
+// TODO: What is the 'extern' keyword for?
+// TODO: Can friend classes access protected data?
+// TODO: Can friend functions alter contents?
 
-// A friend function is able to access members without the need of inheriting the class.
-// The friend function acts as a bridge between two classes by accessing their private data.
-// It can be used to increase the versatility of overloaded operators.
-// It can be declared either in the public or private or protected part of the class.
-
-// Occassionally we may want to expose access to class protected
-// and private member variables without inheritance. In this case
-// we introduce a friend class or function. These have special access
-// to the other class' contents.
-
-// TODO: Can they alter the contents?
+// We have two types of 'friend' data: friend classes and friend functions. Friend
+// classes are allowed to access the protected and private data of another class
+// without inheriting from it. A friend function is a function with the same capabilities.
 
 int main() {
 
+    // Create an instance of SimpleClass
     SimpleClass simple_class = SimpleClass("Simple class name");
 
+    // This can print the private m_value field as it is a
+    // friend class.
     FriendClass friend_class;
     friend_class.print(simple_class);
 
+    // This can print the private m_value field as the 'print'
+    // method has access to it.
     FriendFunctionClass friend_function_class;
     friend_function_class.print(simple_class);
 

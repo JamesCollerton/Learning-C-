@@ -2,32 +2,23 @@
 #include "tuple.h"
 
 // TODO: Difference between templates and generics.
+// TODO: What is template metaprogramming?
+// TODO: What is template specialization?
+// TODO: What does inline do?
 
 // Templates are used to generalise code over data types. For
 // example, we may have a 'List' class that can be used on lots
-// of different classes. We don't want to write a different List
-// class each time we introduce a new one, so we would employ
-// templates.
+// of different types (a list of integers, a list of string etc.). 
+// We don't want to write a different List class each time we introduce 
+// a new type, so we would employ templates.
 
-// Templates are expanded at compiler time.
-
-// C++ adds two new keywords to support templates: ‘template’ and 
-// ‘typename’. The second keyword can always be replaced by the 
-// keyword ‘class’.
-
-// We have two different types of template: class and function.
-
-// We can specify default data types.
-
-// Template argument deduction: it can work out which to use
-// from the arguments.
-
-// TODO: What is template metaprogramming?
-// TODO: What is template specialization?
+// There are function templates, and class templates. They're best
+// demonstrated by example.
 
 // This function uses templates. It takes in any two variables,
 // comparing them and returning the minimum. How the comparison works,
-// and what 'minimum' means will depend on the type T.
+// and what 'minimum' means will depend on the type T. The template
+// is expanded at compiler time.
 template <typename T> T min(T a, T b)
 {
     return (a < b) ? a : b;
@@ -49,6 +40,8 @@ int main() {
     auto a = 'a';
     auto b = 'b';
 
+    // Now we declare a tuple containing two `char` objects. It could
+    // just have easily been two strings.
     auto tuple = Tuple<char, char>(a, b);
 
     std::cout << "A: " << *tuple.getA() << std::endl;

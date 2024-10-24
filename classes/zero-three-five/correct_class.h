@@ -22,13 +22,20 @@
 // https://www.scaler.com/topics/cpp-char/
 
 class CorrectClass {
-
-  private:
-    std::string* _string_pointer;
     
   public:
 
-    CorrectClass(std::string* _string_pointer);
+    std::string* _string_pointer;
+
+    CorrectClass(std::string str);
+
+    // Copy constructor
+    CorrectClass(CorrectClass& correct_class);
+
+    // Move constructor
+    // CorrectClass(CorrectClass&& correct_class);
+
+    ~CorrectClass();
 
     void print();
 
