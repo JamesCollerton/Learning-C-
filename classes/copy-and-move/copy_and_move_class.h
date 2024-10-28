@@ -9,7 +9,7 @@
 // Copy constructors can be used with the below syntax:
 
 // CopyAndMoveClass class_to_copy("Initial value");
-// CopyAndMoveClass copied_class = class_to_copy;
+// CopyAndMoveClass copied_class = class_to_copy; // < Copy constructor called!
 
 // Here we are _constructing_ `copied_class_a` by _copying_ 
 // the contents of `class_to_copy_a`. In a lot of languages 
@@ -24,14 +24,14 @@
 // CopyAndMoveClass moved_class = std::move(class_to_move);
 
 // Here we are _constructing_ `moved_class_a` by _moving_ the contents
-// of `class_to_move_a` into it. Move constructors are optional, unless
-// you specify one, the copy constructor will be called.
+// of `class_to_move_a` into it. Move constructors are optional and, 
+// unless you specify one, the copy constructor will be called.
 
 // With a move constructor we are usually concerned with transferring
 // ownership of some data. For example, let's say we have a pointer to
 // an object as part of a class. When we move-construct class A from
 // class B, we want class A to have a pointer to the existing data class
-// B used to point to (emphasis on the used).
+// B used to point to (emphasis on the _used_).
 
 // Contrast this to a copy constructor, which would make a full duplicate
 // of the underlying data.
@@ -43,7 +43,7 @@
 
 // CopyAndMoveClass class_to_copy("Initial value");
 // CopyAndMoveClass copied_class;
-// copied_class = class_to_copy;
+// copied_class = class_to_copy; // < Copy assignment called
 
 // CopyAndMoveClass class_to_move("Initial value");
 // CopyAndMoveClass moved_class;
