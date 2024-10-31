@@ -4,10 +4,12 @@
 
 // TODO: What is the 'extern' keyword for?
 // TODO: Can friend classes access protected data?
+    // Yes
 // TODO: Can friend functions alter contents?
+    // Yes
 
 // We have two types of 'friend' data: friend classes and friend functions. Friend
-// classes are allowed to access the protected and private data of another class
+// classes are allowed to access and alter the protected and private data of another class
 // without inheriting from it. A friend function is a function with the same capabilities.
 
 int main() {

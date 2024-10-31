@@ -15,7 +15,7 @@ CorrectClass::CorrectClass(CorrectClass&& correct_class): _string_pointer(correc
 
 CorrectClass& CorrectClass::operator=(const CorrectClass &other) {
     std::cout << "Calling copy assignment" << std::endl;
-    _string_pointer = new std::string(*other.m_value);
+    _string_pointer = new std::string(*other._string_pointer);
     return *this;
 }
 
@@ -23,8 +23,8 @@ CorrectClass& CorrectClass::operator=(CorrectClass &&other) {
     std::cout << "Calling move assignment" << std::endl;
 
     if(this != &other){
-        m_value = other.m_value;
-        other.m_value = nullptr;
+        _string_pointer = other._string_pointer;
+        other._string_pointer = nullptr;
     }
     return *this;
 }
