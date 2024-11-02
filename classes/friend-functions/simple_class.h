@@ -7,7 +7,7 @@
 class SimpleClass {
   
     public:
-        SimpleClass(std::string name);
+        SimpleClass(std::string name): m_name(name) {};
 
     private:
         std::string m_name;
