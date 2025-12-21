@@ -1,0 +1,7 @@
+module(
+    name = "mini_http_client",
+    version = "1.0.0",
+)
+
+bazel_dep(name = "rules_cc", version = "0.0.9")
+
