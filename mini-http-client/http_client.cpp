@@ -16,7 +16,7 @@ HttpClient::~HttpClient() {
     // Cleanup
 }
 
-ParsedUrl HttpClient::parseUrl(const std::string& url) {
+std::optional<ParsedUrl> HttpClient::parseUrl(const std::string& url) {
     ParsedUrl parsed;
     parsed.port = 80; // Default HTTP port
     parsed.path = "/"; // Default path
@@ -24,10 +24,14 @@ ParsedUrl HttpClient::parseUrl(const std::string& url) {
     // Find protocol
     size_t protocolPos = url.find("://");
     if (protocolPos == std::string::npos) {
-        return parsed; // Invalid URL
+        return std::nullopt; // Invalid URL - missing protocol
     }
     
     std::string afterProtocol = url.substr(protocolPos + 3);
+    
+    if (afterProtocol.empty()) {
+        return std::nullopt; // Invalid URL - missing hostname
+    }
     
     // Find path
     size_t pathPos = afterProtocol.find('/');
@@ -40,10 +44,23 @@ ParsedUrl HttpClient::parseUrl(const std::string& url) {
     size_t portPos = afterProtocol.find(':');
     if (portPos != std::string::npos) {
         parsed.host = afterProtocol.substr(0, portPos);
+        if (parsed.host.empty()) {
+            return std::nullopt; // Invalid URL - empty hostname
+        }
         std::string portStr = afterProtocol.substr(portPos + 1);
-        parsed.port = std::stoi(portStr);
+        try {
+            parsed.port = std::stoi(portStr);
+            if (parsed.port <= 0 || parsed.port > 65535) {
+                return std::nullopt; // Invalid port number
+            }
+        } catch (const std::exception&) {
+            return std::nullopt; // Invalid port number
+        }
     } else {
         parsed.host = afterProtocol;
+        if (parsed.host.empty()) {
+            return std::nullopt; // Invalid URL - missing hostname
+        }
     }
     
     return parsed;
@@ -162,18 +179,18 @@ std::string HttpClient::extractBody(const std::string& response) {
 }
 
 std::string HttpClient::get(const std::string& url) {
-    ParsedUrl parsedUrl = parseUrl(url);
-    if (parsedUrl.host.empty()) {
+    auto parsedUrl = parseUrl(url);
+    if (!parsedUrl.has_value()) {
         std::cerr << "Invalid URL: " << url << std::endl;
         return "";
     }
     
-    int sockfd = connectToHost(parsedUrl.host, parsedUrl.port);
+    int sockfd = connectToHost(parsedUrl->host, parsedUrl->port);
     if (sockfd == -1) {
         return "";
     }
     
-    if (!sendRequest(sockfd, "GET", parsedUrl)) {
+    if (!sendRequest(sockfd, "GET", *parsedUrl)) {
         close(sockfd);
         return "";
     }
@@ -185,18 +202,18 @@ std::string HttpClient::get(const std::string& url) {
 }
 
 std::string HttpClient::post(const std::string& url, const std::string& data) {
-    ParsedUrl parsedUrl = parseUrl(url);
-    if (parsedUrl.host.empty()) {
+    auto parsedUrl = parseUrl(url);
+    if (!parsedUrl.has_value()) {
         std::cerr << "Invalid URL: " << url << std::endl;
         return "";
     }
     
-    int sockfd = connectToHost(parsedUrl.host, parsedUrl.port);
+    int sockfd = connectToHost(parsedUrl->host, parsedUrl->port);
     if (sockfd == -1) {
         return "";
     }
     
-    if (!sendRequest(sockfd, "POST", parsedUrl, data)) {
+    if (!sendRequest(sockfd, "POST", *parsedUrl, data)) {
         close(sockfd);
         return "";
     }

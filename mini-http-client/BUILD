@@ -64,6 +64,7 @@ cc_library(
     name = "http_client",
     srcs = ["http_client.cpp"],
     hdrs = ["http_client.h"],
+    copts = ["-std=c++17"],
     visibility = ["//visibility:public"],  # Allows other packages to depend on this
 )
 
@@ -71,6 +72,7 @@ cc_library(
 cc_binary(
     name = "main",
     srcs = ["main.cpp"],
+    copts = ["-std=c++17"],
     deps = [":http_client"],
 )
 

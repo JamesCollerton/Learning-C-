@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <optional>
 
 struct ParsedUrl {
     std::string host;
@@ -20,8 +21,8 @@ public:
     std::string post(const std::string& url, const std::string& data);
     
 private:
-    // Parse URL into components
-    ParsedUrl parseUrl(const std::string& url);
+    // Parse URL into components, returns nullopt on failure
+    std::optional<ParsedUrl> parseUrl(const std::string& url);
     
     // Create socket and connect to host
     int connectToHost(const std::string& host, int port);
