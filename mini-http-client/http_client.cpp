@@ -73,13 +73,29 @@ std::optional<ParsedUrl> HttpClient::parseUrl(const std::string& url) {
 }
 
 int HttpClient::connectToHost(const std::string& host, int port) {
-    // Get address info
+    // Prepare the addrinfo "hints" structure for getaddrinfo().
+    // This is a POSIX C struct with no default initialization, so we must
+    // explicitly zero it to ensure all unspecified fields are set to 0.
+    // Zero values mean "use default / don't care" according to the API contract.
+    // We then fill in only the fields we care about: allow either IPv4 or IPv6
+    // addresses, and request a TCP (stream) socket.
+
+    // 'result' is a pointer that will receive the head of a linked list
+    // allocated by getaddrinfo(). We pass &result so getaddrinfo can
+    // write the pointer back. 'rp' is used to iterate through this list
+    // to try each returned address until a connection succeeds.
     struct addrinfo hints, *result, *rp;
     memset(&hints, 0, sizeof(struct addrinfo));
     hints.ai_family = AF_UNSPEC;    // Allow IPv4 or IPv6
     hints.ai_socktype = SOCK_STREAM; // TCP socket
     
     std::string portStr = std::to_string(port);
+    // Resolve the hostname and port into one or more socket-ready addresses.
+    // getaddrinfo() is a POSIX C API (not part of the C++ standard library),
+    // so it uses C-style structs, pointers, and explicit initialization.
+    // It translates human-readable names (e.g. "example.com", "80") into a
+    // linked list of addrinfo structures that can be passed directly to
+    // socket() and connect(). We try each result until a connection succeeds.
     int status = getaddrinfo(host.c_str(), portStr.c_str(), &hints, &result);
     if (status != 0) {
         std::cerr << "getaddrinfo error: " << gai_strerror(status) << std::endl;
