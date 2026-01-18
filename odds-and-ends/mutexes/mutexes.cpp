@@ -1,6 +1,7 @@
 #include <iostream>
 #include <thread>
 #include <mutex>
+#include <vector>
 
 using namespace std;
 
@@ -27,19 +28,31 @@ void doSomethingThreadUnsafe() {
   example_mutex.unlock();
 }
 
-// This is our thread unsafe method (i.e.
-// multiple threads shouldn't execute the
-// contents at the same time).
 void scopedLocksExample() {
 
-  // We lock and unlock the mutex at the start
-  // and finish of the method, making any threads
-  // trying to access the enclosed code wait.
+  // Removing the inconvenience of unlocking
+  // a mutex
   scoped_lock lock(example_mutex);
   cout << "This is invocation number " << i++ << ", no other thread can get in!" << endl;
 }
 
+vector<int> v = {1, 2, 3};
+
+int get(int i) {
+  if(i < 0 || i > v.size()) {
+    [[unlikely]]
+    throw runtime_error("Everyone panic!");
+  } else {
+    [[likely]]
+    return v[i];
+  } 
+}
+
 int main() {
+
+  get(1);
+
+  cout << "Hello " << " \n";
 
   // Here we create three threads, all trying to do something
   // unsafe
