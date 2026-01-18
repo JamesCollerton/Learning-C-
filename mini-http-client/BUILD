@@ -1,4 +1,4 @@
-load("@rules_cc//cc:defs.bzl", "cc_binary", "cc_library")
+load("@rules_cc//cc:defs.bzl", "cc_binary", "cc_library", "cc_test")
 
 # Stages of compilation:
 
@@ -72,6 +72,14 @@ cc_library(
 cc_binary(
     name = "main",
     srcs = ["main.cpp"],
+    copts = ["-std=c++17"],
+    deps = [":http_client"],
+)
+
+# Tests for the HTTP client library
+cc_test(
+    name = "http_client_test",
+    srcs = ["http_client_test.cpp"],
     copts = ["-std=c++17"],
     deps = [":http_client"],
 )

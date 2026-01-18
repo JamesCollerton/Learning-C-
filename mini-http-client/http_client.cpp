@@ -23,8 +23,14 @@ std::optional<ParsedUrl> HttpClient::parseUrl(const std::string& url) {
     
     // Find protocol
     size_t protocolPos = url.find("://");
-    if (protocolPos == std::string::npos) {
-        return std::nullopt; // Invalid URL - missing protocol
+    if (protocolPos == std::string::npos || protocolPos == 0) {
+        return std::nullopt; // Invalid URL - missing protocol or protocol at start
+    }
+    
+    // Check that protocol is valid (http or https)
+    std::string protocol = url.substr(0, protocolPos);
+    if (protocol != "http" && protocol != "https") {
+        return std::nullopt; // Invalid protocol
     }
     
     std::string afterProtocol = url.substr(protocolPos + 3);

@@ -20,9 +20,11 @@ public:
     // Perform a POST request
     std::string post(const std::string& url, const std::string& data);
     
-private:
     // Parse URL into components, returns nullopt on failure
+    // Made public for testing purposes
     std::optional<ParsedUrl> parseUrl(const std::string& url);
+    
+private:
     
     // Create socket and connect to host
     int connectToHost(const std::string& host, int port);
