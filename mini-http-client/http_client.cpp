@@ -193,6 +193,18 @@ bool HttpClient::sendRequest(int sockfd, const std::string& method,
     return true;
 }
 
+// receiveResponse: Reads the HTTP response from the TCP socket's receive buffer.
+// TCP is a bidirectional, full-duplex protocol - the same socket used for sending (sendRequest) is also
+// used for receiving. There's no strict send/receive pattern in TCP; it's a byte stream where data can
+// flow in both directions simultaneously. After sending a request, we read the response from the same
+// socket. The recv() system call reads data from the socket's kernel receive buffer, which contains
+// data that has arrived from the network and been reassembled by TCP. TCP handles packet ordering,
+// retransmission, and flow control transparently - we just read bytes from the stream.
+// 
+// The loop is necessary because TCP is a stream protocol: data may arrive in multiple packets/chunks.
+// We read in a loop until recv() returns 0 (connection closed by peer) or -1 (error). Each recv()
+// call may return fewer bytes than requested if that's all that's available in the buffer, so we
+// accumulate data until the connection closes or an error occurs.
 std::string HttpClient::receiveResponse(int sockfd) {
     std::string response;
     char buffer[4096];
@@ -207,6 +219,11 @@ std::string HttpClient::receiveResponse(int sockfd) {
             break; // Connection closed
         }
         
+        // Null-terminate the buffer: recv() reads raw bytes and doesn't add a null terminator.
+        // Since we use response += buffer (which treats buffer as a C-style string), we need to
+        // manually add '\0' at the end of the received data so the string concatenation knows where
+        // the data ends. Note: This is safe because recv() is called with sizeof(buffer) - 1,
+        // leaving room for the null terminator.
         buffer[received] = '\0';
         response += buffer;
     }
@@ -214,6 +231,13 @@ std::string HttpClient::receiveResponse(int sockfd) {
     return response;
 }
 
+// extractBody: Parses an HTTP response string to extract the message body, separating it from the headers.
+// HTTP responses follow a specific format: status line, headers (key: value pairs), a blank line(\r\n\r\n)
+// that marks the end of headers, and then the message body. This method locates the double CRLF sequence
+// (\r\n\r\n) which is the standard HTTP delimiter between headers and body. Everything after this
+// delimiter is the actual content/data returned by the server. This operates at the Application Layer
+// (OSI Layer 7), parsing the HTTP protocol structure. Returns an empty string if the header delimiter
+// is not found (malformed response or headers-only response).
 std::string HttpClient::extractBody(const std::string& response) {
     // Find the end of headers (double CRLF)
     size_t headerEnd = response.find("\r\n\r\n");
