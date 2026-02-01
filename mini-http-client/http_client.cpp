@@ -72,6 +72,14 @@ std::optional<ParsedUrl> HttpClient::parseUrl(const std::string& url) {
     return parsed;
 }
 
+// OSI Model: This method operates primarily at the Transport Layer (Layer 4) and Network Layer (Layer 3).
+// - Network Layer (L3): getaddrinfo() performs DNS resolution, converting hostnames to IP addresses
+//   (IPv4/IPv6). This is a network-layer concern as it determines the routing path to the destination.
+// - Transport Layer (L4): socket() creates a TCP (SOCK_STREAM) endpoint, and connect() establishes
+//   a reliable, connection-oriented transport session. TCP handles segmentation, flow control, and
+//   error recovery at this layer.
+// - Lower layers (Physical L1, Data Link L2) are abstracted away by the OS kernel and network stack.
+// - Upper layers (Session L5, Presentation L6, Application L7) are handled by the HTTP protocol implementation.
 int HttpClient::connectToHost(const std::string& host, int port) {
     // Prepare the addrinfo "hints" structure for getaddrinfo().
     // This is a POSIX C struct with no default initialization, so we must
@@ -102,6 +110,14 @@ int HttpClient::connectToHost(const std::string& host, int port) {
         return -1;
     }
     
+    // Socket: A socket is a file descriptor (integer) that represents an endpoint for network communication.
+    // It's created by the socket() system call and acts as an interface between the application and the
+    // OS network stack. The file descriptor (sockfd) is used by the OS to identify this specific socket
+    // for operations like connect(), send(), recv(), and close(). In this context, it's a TCP socket
+    // (SOCK_STREAM), which provides a reliable, bidirectional byte stream connection. The value -1
+    // indicates an invalid/uninitialized socket, which is the standard error return value from socket()
+    // and other POSIX socket functions.
+
     // Try each address until we successfully connect
     int sockfd = -1;
     for (rp = result; rp != nullptr; rp = rp->ai_next) {
@@ -128,6 +144,15 @@ int HttpClient::connectToHost(const std::string& host, int port) {
     return sockfd;
 }
 
+// sendRequest: Constructs and sends an HTTP request over the established TCP socket connection.
+// This method operates at the Application Layer (OSI Layer 7), implementing the HTTP protocol.
+// It builds a complete HTTP request message consisting of:
+// 1. Request line: Method (GET/POST), path, and HTTP version (e.g., "GET /path HTTP/1.1\r\n")
+// 2. Headers: Required headers like Host, Connection, and optional Content-Length/Content-Type for POST
+// 3. Body: Optional request body (for POST requests with data)
+// The request is formatted as a text string following HTTP/1.1 specification, then sent over the
+// socket using the send() system call. The send() function operates at the Transport Layer (Layer 4),
+// writing the bytes to the TCP connection. Returns true on successful transmission, false on error.
 bool HttpClient::sendRequest(int sockfd, const std::string& method,
                             const ParsedUrl& parsedUrl, const std::string& body) {
     std::ostringstream request;
